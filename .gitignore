@@ -1,0 +1,30 @@
+# Python compilado
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Entornos virtuales y Anaconda
+.conda/
+.anaconda/
+
+# Docker y Bases de datos locales
+.docker/
+postgres_data/
+
+# Variables de entorno (Contraseñas y credenciales)
+.env
+
+# PESOS DE YOLO Y DATASETS (Roboflow)
+*.pt
+runs/
+datasets/
+downloads/
+BONE FRACTURE.*/
+
+# Archivos subidos por usuarios en la API
+backend/app/uploads/*
+!backend/app/uploads/.gitkeep

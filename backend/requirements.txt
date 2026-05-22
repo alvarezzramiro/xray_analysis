@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+alembic
+python-dotenv
+python-multipart
+pydantic-settings
+pillow
+opencv-python-headless
+pyyaml
+matplotlib
+numpy
+requests
+scipy
+psutil
+polars
