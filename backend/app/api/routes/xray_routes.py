@@ -91,26 +91,21 @@ def create_overlay(image_id: UUID, db: Session = Depends(get_db)):
     }
 
 @router.post("/test-yolo/{image_id}")
-def test_yolo(image_id: str, db: Session = Depends(get_db)):
+def test_yolo(image_id: str):
 
-    xray = db.query(XRayImage).filter(XRayImage.id == image_id).first()
-    
-    if not xray:
+    image_path = f"/code/uploads/{image_id}.jpg"
+
+    if not os.path.exists(image_path):
         raise HTTPException(
             status_code=404,
-            detail="Image record not found in database"
-        )
-
-    if not os.path.exists(xray.filepath):
-        raise HTTPException(
-            status_code=404,
-            detail=f"Physical file missing at: {xray.filepath}"
+            detail="Image not found"
         )
 
     detector = FractureDetector()
-    detections = detector.detect(xray.filepath)
+    result = detector.detect(image_path)
 
     return {
         "image_id": image_id,
-        "detections": detections
+        "detections": result["detections"],
+        "annotated_image": result["annotated_image"]
     }

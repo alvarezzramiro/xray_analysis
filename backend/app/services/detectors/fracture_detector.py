@@ -1,4 +1,6 @@
 from ultralytics import YOLO
+import cv2
+import os
 
 class FractureDetector:
 
@@ -10,11 +12,13 @@ class FractureDetector:
         try:
             results = self.model(
                 image_path,
-                conf=0.25,
+                conf=0.10,
                 verbose=True
             )
 
             detections = []
+
+            annotated_image_path = None
 
             for result in results:
 
@@ -35,8 +39,25 @@ class FractureDetector:
                         }
                     })
 
-            return detections
+                annotated_frame = result.plot()
+
+                filename = os.path.basename(image_path)
+                name, ext = os.path.splitext(filename)
+
+                annotated_filename = f"{name}_annotated{ext}"
+
+                annotated_image_path = (f"/code/annotated/{annotated_filename}")
+
+                cv2.imwrite(annotated_image_path, annotated_frame)
+
+            return {
+                "detections": detections,
+                "annotated_image": annotated_filename
+            }
 
         except Exception as e:
             print(f"Detection error: {e}")
-            return []
+            return {
+                "detections": [],
+                "annotated_image": None
+            }
