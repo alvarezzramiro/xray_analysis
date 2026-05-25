@@ -5,7 +5,7 @@ import os
 class FractureDetector:
 
     def __init__(self):
-        self.model = YOLO("/code/runs/detect/train-2/weights/best.pt")
+        self.model = YOLO("app/models/best.pt")
 
     def detect(self, image_path):
 

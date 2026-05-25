@@ -18,7 +18,7 @@ postgres_data/
 # Variables de entorno (Contraseñas y credenciales)
 .env
 
-# PESOS DE YOLO Y DATASETS (Roboflow)
+# Datasets y archivos de entrenamiento
 *.pt
 runs/
 datasets/
