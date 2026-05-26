@@ -16,6 +16,8 @@ from app.schemas.analysis_schema import (AnalysisResponse)
 
 from app.models.xray_image import XRayImage
 
+from app.models.xray_analysis import XRayAnalysis
+
 router = APIRouter()
 
 @router.post("/upload-xray", response_model=XRayUploadResponse)
@@ -69,8 +71,35 @@ def analyze_xray_endpoint(image_id: UUID, db: Session = Depends(get_db)):
 
     result = run_analysis(
         db=db,
+        image_id=xray.id,
         image_name=xray.filename,
         image_path=xray.filepath
     )
 
     return result
+
+@router.get("/analysis/{analysis_id}")
+def get_analysis(analysis_id: UUID, db: Session = Depends(get_db)):
+    analysis = (
+        db.query(XRayAnalysis)
+        .filter(XRayAnalysis.id == analysis_id)
+        .first()
+    )
+
+    if not analysis:
+        raise HTTPException(
+            status_code=404,
+            detail="Analysis not found"
+        )
+
+    return analysis
+
+@router.get("/xray/{image_id}/analyses")
+def get_xray_analyses(image_id: UUID, db: Session = Depends(get_db)):
+    analyses = (
+        db.query(XRayAnalysis)
+        .filter(XRayAnalysis.image_id == image_id)
+        .all()
+    )
+
+    return analyses

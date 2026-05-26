@@ -6,7 +6,7 @@ from app.services.overlay_service import generate_overlay_image
 
 MODEL_VERSION = "fracture-v1"
 
-def analyze_xray(db, image_name, image_path):
+def analyze_xray(db, image_id, image_name, image_path):
 
     start_time = time.time()
 
@@ -27,6 +27,7 @@ def analyze_xray(db, image_name, image_path):
     fracture_detected = (len(detections) > 0)
 
     analysis = XRayAnalysis(
+        image_id=image_id,
         image_name=image_name,
         model_version=MODEL_VERSION,
         fracture_detected=fracture_detected,

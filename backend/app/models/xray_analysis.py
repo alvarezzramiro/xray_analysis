@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, Integer, DateTime
+from sqlalchemy import Column, String, Boolean, Integer, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
 
@@ -13,6 +13,12 @@ class XRayAnalysis(Base):
         UUID(as_uuid=True), 
         primary_key=True, 
         default=uuid.uuid4
+    )
+
+    image_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("xray_images.id"),
+        nullable=False
     )
 
     image_name = Column(String, nullable=False)

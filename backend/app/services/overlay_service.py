@@ -9,7 +9,7 @@ ANNOTATED_DIR = "annotated"
 
 os.makedirs(ANNOTATED_DIR, exist_ok=True)
 
-def generate_overlay_image(results, original_iamge_path):
+def generate_overlay_image(results, original_image_path):
     
     annotated_filename = None
 
@@ -17,7 +17,7 @@ def generate_overlay_image(results, original_iamge_path):
 
         annotated_frame = result.plot()
 
-        filename = os.path.basename(original_iamge_path)
+        filename = os.path.basename(original_image_path)
 
         name, ext = os.path.splitext(filename)
 
