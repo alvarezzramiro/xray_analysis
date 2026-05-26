@@ -1,44 +1,53 @@
-import random
+import time
 
-from app.models.analysis_result import AnalysisResult
+from app.models.xray_analysis import XRayAnalysis
+from app.services.detectors import fracture_detector
+from app.services.overlay_service import generate_overlay_image
 
+MODEL_VERSION = "fracture-v1"
 
-FAKE_BONES = [
-    "radius",
-    "ulna",
-    "femur",
-    "tibia",
-    "humerus"
-]
+def analyze_xray(db, image_name, image_path):
 
-FAKE_INJURIES = [
-    "fracture",
-    "stress fracture",
-    "bone lesion"
-]
+    start_time = time.time()
 
+    detection_result = (fracture_detector.detect(image_path))
 
-def generate_fake_analysis(db, image_id):
-    analysis = AnalysisResult(
-        image_id=image_id,
+    detections = (detection_result["detections"])
 
-        bone=random.choice(FAKE_BONES),
+    results = (detection_result["results"])
 
-        injury_type=random.choice(FAKE_INJURIES),
+    annotated_image = None
 
-        confidence=round(random.uniform(0.75, 0.99), 2),
+    if results:
 
-        bbox_x1=random.randint(50, 150),
-        bbox_y1=random.randint(50, 150),
+        annotated_image = (generate_overlay_image(results, image_path))
 
-        bbox_x2=random.randint(200, 350),
-        bbox_y2=random.randint(200, 350)
+    processing_time_ms = int((time.time() - start_time) * 1000)
+
+    fracture_detected = (len(detections) > 0)
+
+    analysis = XRayAnalysis(
+        image_name=image_name,
+        model_version=MODEL_VERSION,
+        fracture_detected=fracture_detected,
+        detections=detections,
+        processing_time_ms=processing_time_ms
     )
 
     db.add(analysis)
-
     db.commit()
-
     db.refresh(analysis)
 
-    return analysis
+    return {
+        "analysis_id": str(analysis.id),
+
+        "fracture_detected": fracture_detected,
+
+        "detections": detections,
+
+        "annotated_image": annotated_image,
+
+        "processing_time_ms": processing_time_ms,
+
+        "model_version": MODEL_VERSION
+    }

@@ -2,46 +2,29 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-ANNOTATED_DIR = Path("annotated")
+import os
+import cv2
 
-ANNOTATED_DIR.mkdir(exist_ok=True)
+ANNOTATED_DIR = "annotated"
 
-def generate_overlay_image(image_path, analysis):
-    image = Image.open(image_path)
+os.makedirs(ANNOTATED_DIR, exist_ok=True)
 
-    draw = ImageDraw.Draw(image)
+def generate_overlay_image(results, original_iamge_path):
+    
+    annotated_filename = None
 
-    x1 = analysis.bbox_x1
-    y1 = analysis.bbox_y1
+    for result in results:
 
-    x2 = analysis.bbox_x2
-    y2 = analysis.bbox_y2
+        annotated_frame = result.plot()
 
-    draw.rectangle(
-        [(x1, y1), (x2, y2)],
-        outline="red",
-        width=5
-    )
+        filename = os.path.basename(original_iamge_path)
 
-    label = (
-        f"{analysis.injury_type} "
-        f"{analysis.confidence}"
-    )
+        name, ext = os.path.splitext(filename)
 
-    draw.text(
-        (x1, y1 - 20),
-        label,
-        fill="red"
-    )
+        annotated_filename = (f"{name}_annotated{ext}")
 
-    annotated_filename = (
-        f"annotated_{analysis.image_id}.png"
-    )
+        annotated_name = os.path.join(ANNOTATED_DIR, annotated_filename)
 
-    annotated_path = (
-        ANNOTATED_DIR / annotated_filename
-    )
+        cv2.imwrite(annotated_name, annotated_frame)
 
-    image.save(annotated_path)
-
-    return str(annotated_path)
+    return annotated_filename

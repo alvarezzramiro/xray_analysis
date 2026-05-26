@@ -10,18 +10,13 @@ from app.services.xray_service import (
     create_xray_record
 )
 
-from app.services.analysis_service import (generate_fake_analysis)
+from app.services.analysis_service import (analyze_xray as run_analysis)
 
 from app.schemas.analysis_schema import (AnalysisResponse)
 
 from app.models.xray_image import XRayImage
 
-from app.services.overlay_service import (generate_overlay_image)
-
-from app.services.detectors import FractureDetector
-
 router = APIRouter()
-
 
 @router.post("/upload-xray", response_model=XRayUploadResponse)
 def upload_xray(
@@ -58,14 +53,8 @@ def upload_xray(
     )
 
 @router.post("/analyze/{image_id}", response_model=AnalysisResponse)
-def analyze_xray(image_id: UUID, db: Session = Depends(get_db)):
+def analyze_xray_endpoint(image_id: UUID, db: Session = Depends(get_db)):
     
-    analysis = generate_fake_analysis(db=db, image_id=image_id)
-    
-    return analysis
-
-@router.post("/overlay/{image_id}")
-def create_overlay(image_id: UUID, db: Session = Depends(get_db)):
     xray = (
         db.query(XRayImage)
         .filter(XRayImage.id == image_id)
@@ -73,39 +62,15 @@ def create_overlay(image_id: UUID, db: Session = Depends(get_db)):
     )
 
     if not xray:
-        return { "error": "X-Ray not found" }
-    
-    analysis = generate_fake_analysis(
-        db=db,
-        image_id=image_id
-    )
-
-    annotated_path = generate_overlay_image(
-        image_path=xray.filepath,
-        analysis=analysis
-    )
-
-    return {
-        "image_id": image_id,
-        "annotated_image": annotated_path
-    }
-
-@router.post("/test-yolo/{image_id}")
-def test_yolo(image_id: str):
-
-    image_path = f"/code/uploads/{image_id}.jpg"
-
-    if not os.path.exists(image_path):
         raise HTTPException(
             status_code=404,
-            detail="Image not found"
+            detail="X-Ray not found"
         )
 
-    detector = FractureDetector()
-    result = detector.detect(image_path)
+    result = run_analysis(
+        db=db,
+        image_name=xray.filename,
+        image_path=xray.filepath
+    )
 
-    return {
-        "image_id": image_id,
-        "detections": result["detections"],
-        "annotated_image": result["annotated_image"]
-    }
+    return result

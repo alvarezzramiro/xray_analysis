@@ -12,24 +12,24 @@ class FractureDetector:
         try:
             results = self.model(
                 image_path,
-                conf=0.10,
+                conf=0.25,
                 verbose=True
             )
 
             detections = []
 
-            annotated_image_path = None
-
             for result in results:
 
                 for box in result.boxes:
 
-                    x1, y1, x2, y2 = box.xyxy[0].tolist()
+                    x1, y1, x2, y2 = (box.xyxy[0].tolist())
                     confidence = float(box.conf[0])
                     class_id = int(box.cls[0])
+                    class_name = (result.names[class_id])
 
                     detections.append({
                         "class_id": class_id,
+                        "class_name": class_name,
                         "confidence": confidence,
                         "bbox": {
                             "x1": int(x1),
@@ -39,25 +39,14 @@ class FractureDetector:
                         }
                     })
 
-                annotated_frame = result.plot()
-
-                filename = os.path.basename(image_path)
-                name, ext = os.path.splitext(filename)
-
-                annotated_filename = f"{name}_annotated{ext}"
-
-                annotated_image_path = (f"/code/annotated/{annotated_filename}")
-
-                cv2.imwrite(annotated_image_path, annotated_frame)
-
             return {
                 "detections": detections,
-                "annotated_image": annotated_filename
+                "results": results
             }
 
         except Exception as e:
             print(f"Detection error: {e}")
             return {
                 "detections": [],
-                "annotated_image": None
+                "results": None
             }
