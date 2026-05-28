@@ -1,31 +1,39 @@
 from pydantic import BaseModel
+from uuid import UUID
+from typing import List, Optional
 
-class BoundingBoxResponse(BaseModel):
+class BoundingBox(BaseModel):
     x1: int
     y1: int
     x2: int
     y2: int
 
-class DetectionResponse(BaseModel):
+class Detection(BaseModel):
     class_id: int
     class_name: str
     confidence: float
-
-    bbox: BoundingBoxResponse
-
-from pydantic import BaseModel
-from typing import List
+    bbox: BoundingBox
 
 class AnalysisResponse(BaseModel):
 
     analysis_id: str
 
+    image_id: UUID
+
+    model_version: str
+
     fracture_detected: bool
 
-    detections: List[DetectionResponse]
+    detections_count: int
 
-    annotated_image: str | None
+    max_confidence: Optional[float]
+
+    detections: List[Detection]
+
+    annotated_image_path: Optional[str]
 
     processing_time_ms: int
 
-    model_version: str
+    status: str
+
+    error_message: Optional[str]

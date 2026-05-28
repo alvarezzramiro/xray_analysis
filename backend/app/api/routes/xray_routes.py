@@ -10,9 +10,9 @@ from app.services.xray_service import (
     create_xray_record
 )
 
-from app.services.analysis_service import (analyze_xray as run_analysis)
+from app.services.analysis_service import analyze_xray
 
-from app.schemas.analysis_schema import (AnalysisResponse)
+from app.schemas.analysis_schema import AnalysisResponse
 
 from app.models.xray_image import XRayImage
 
@@ -21,7 +21,7 @@ from app.models.xray_analysis import XRayAnalysis
 router = APIRouter()
 
 @router.post("/upload-xray", response_model=XRayUploadResponse)
-def upload_xray(
+def upload_xray_endpoint(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
@@ -69,17 +69,28 @@ def analyze_xray_endpoint(image_id: UUID, db: Session = Depends(get_db)):
             detail="X-Ray not found"
         )
 
-    result = run_analysis(
+    analysis = analyze_xray(
         db=db,
         image_id=xray.id,
-        image_name=xray.filename,
         image_path=xray.filepath
     )
 
-    return result
+    return {
+        "analysis_id": analysis.id,
+        "image_id": analysis.image_id,
+        "model_version": analysis.model_version,
+        "fracture_detected": analysis.fracture_detected,
+        "detections_count": analysis.detections_count,
+        "max_confidence": analysis.max_confidence,
+        "detections": analysis.detections,
+        "annotated_image_path": analysis.annotated_image_path,
+        "processing_time_ms": analysis.processing_time_ms,
+        "status": analysis.status,
+        "error_message": analysis.error_message
+    }
 
 @router.get("/analysis/{analysis_id}")
-def get_analysis(analysis_id: UUID, db: Session = Depends(get_db)):
+def get_analysis_endpoint(analysis_id: UUID, db: Session = Depends(get_db)):
     analysis = (
         db.query(XRayAnalysis)
         .filter(XRayAnalysis.id == analysis_id)
@@ -95,7 +106,7 @@ def get_analysis(analysis_id: UUID, db: Session = Depends(get_db)):
     return analysis
 
 @router.get("/xray/{image_id}/analyses")
-def get_xray_analyses(image_id: UUID, db: Session = Depends(get_db)):
+def get_xray_analyses_endpoint(image_id: UUID, db: Session = Depends(get_db)):
     analyses = (
         db.query(XRayAnalysis)
         .filter(XRayAnalysis.image_id == image_id)

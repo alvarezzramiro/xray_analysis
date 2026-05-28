@@ -6,49 +6,73 @@ from app.services.overlay_service import generate_overlay_image
 
 MODEL_VERSION = "fracture-v1"
 
-def analyze_xray(db, image_id, image_name, image_path):
+def analyze_xray(db, image_id, image_path):
 
     start_time = time.time()
 
-    detection_result = (fracture_detector.detect(image_path))
+    try:
 
-    detections = (detection_result["detections"])
+        detection_result = (fracture_detector.detect(image_path))
 
-    results = (detection_result["results"])
+        detections = (detection_result["detections"])
 
-    annotated_image = None
+        results = (detection_result["results"])
 
-    if results:
+        fracture_detected = (len(detections) > 0)
 
-        annotated_image = (generate_overlay_image(results, image_path))
+        annotated_image_path = None
 
-    processing_time_ms = int((time.time() - start_time) * 1000)
+        if results:
 
-    fracture_detected = (len(detections) > 0)
+            annotated_image_path = (generate_overlay_image(results, image_path))
 
-    analysis = XRayAnalysis(
-        image_id=image_id,
-        image_name=image_name,
-        model_version=MODEL_VERSION,
-        fracture_detected=fracture_detected,
-        detections=detections,
-        processing_time_ms=processing_time_ms
-    )
+        processing_time_ms = int((time.time() - start_time) * 1000)
 
-    db.add(analysis)
-    db.commit()
-    db.refresh(analysis)
+        max_confidence = None
 
-    return {
-        "analysis_id": str(analysis.id),
+        if detections:
+            max_confidence = max(
+                detection["confidence"]
+                for detection in detections
+            )
 
-        "fracture_detected": fracture_detected,
+        analysis = XRayAnalysis(
+            image_id=image_id,
+            model_version=MODEL_VERSION,
+            fracture_detected=fracture_detected,
+            detections=detections,
+            detection_count=len(detections),
+            max_confidence=max_confidence,
+            annotated_image_path=annotated_image_path,
+            processing_time_ms=processing_time_ms,
+            status="completed",
+            error_message=None
+        )
 
-        "detections": detections,
+        db.add(analysis)
+        db.commit()
+        db.refresh(analysis)
 
-        "annotated_image": annotated_image,
+        return analysis
+    
+    except Exception as e:
+        
+        processing_time_ms = int((time.time() - start_time) * 1000)
 
-        "processing_time_ms": processing_time_ms,
+        analysis = XRayAnalysis(
+            image_id=image_id,
+            model_version=MODEL_VERSION,
+            fracture_detected=False,
+            detections=[],
+            detection_count=0,
+            max_confidence=None,
+            annotated_image_path=None,
+            processing_time_ms=processing_time_ms,
+            status="failed",
+            error_message=str(e)
+        )
 
-        "model_version": MODEL_VERSION
-    }
+        db.add(analysis)
+        db.commit()
+
+        raise e
