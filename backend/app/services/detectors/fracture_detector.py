@@ -12,7 +12,7 @@ class FractureDetector:
         try:
             results = self.model(
                 image_path,
-                conf=0.25,
+                conf=0.2,
                 verbose=True
             )
 
