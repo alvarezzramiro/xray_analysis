@@ -16,7 +16,7 @@ class Detection(BaseModel):
 
 class AnalysisResponse(BaseModel):
 
-    analysis_id: str
+    id: UUID
 
     image_id: UUID
 
@@ -37,3 +37,6 @@ class AnalysisResponse(BaseModel):
     status: str
 
     error_message: Optional[str]
+
+    class Config:
+        from_attributes = True

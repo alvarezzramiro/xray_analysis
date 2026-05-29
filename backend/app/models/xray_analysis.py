@@ -29,7 +29,7 @@ class XRayAnalysis(Base):
 
     detections_count = Column(Integer, nullable=False, default=0)
 
-    max_confidence = Column(Float, nullable=False)
+    max_confidence = Column(Float, nullable=True)
 
     annotated_image_path = Column(String, nullable=False)
 

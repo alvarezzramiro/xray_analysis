@@ -75,19 +75,7 @@ def analyze_xray_endpoint(image_id: UUID, db: Session = Depends(get_db)):
         image_path=xray.filepath
     )
 
-    return {
-        "analysis_id": analysis.id,
-        "image_id": analysis.image_id,
-        "model_version": analysis.model_version,
-        "fracture_detected": analysis.fracture_detected,
-        "detections_count": analysis.detections_count,
-        "max_confidence": analysis.max_confidence,
-        "detections": analysis.detections,
-        "annotated_image_path": analysis.annotated_image_path,
-        "processing_time_ms": analysis.processing_time_ms,
-        "status": analysis.status,
-        "error_message": analysis.error_message
-    }
+    return analysis
 
 @router.get("/analysis/{analysis_id}")
 def get_analysis_endpoint(analysis_id: UUID, db: Session = Depends(get_db)):
