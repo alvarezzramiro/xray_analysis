@@ -1,29 +1,27 @@
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
-from uuid import UUID
 import os
 
 from app.db.dependencies import get_db
-from app.schemas.xray_schema import XRayUploadResponse
-from app.services.xray_service import (
-    save_xray_file,
-    create_xray_record
-)
-
-from app.services.analysis_service import analyze_xray
-
-from app.schemas.analysis_schema import AnalysisResponse
+from app.schemas.xray_schema import XRayUploadResponse, XRayResponse
+from app.services.xray_service import create_xray_record
 
 from app.models.xray_image import XRayImage
 
-from app.models.xray_analysis import XRayAnalysis
+from app.core.security import get_current_user
 
-router = APIRouter()
+from app.models.user import User
 
-@router.post("/upload-xray", response_model=XRayUploadResponse)
+router = APIRouter(
+    prefix="/xray",
+    tags=["XRay"]
+)
+
+@router.post("/upload", response_model=XRayUploadResponse)
 def upload_xray_endpoint(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     import uuid
     
@@ -46,7 +44,8 @@ def upload_xray_endpoint(
         db=db,
         id=image_id, 
         filename=nuevo_nombre,
-        filepath=filepath
+        filepath=filepath,
+        user_id=current_user.id
     )
 
     return XRayUploadResponse(
@@ -54,51 +53,18 @@ def upload_xray_endpoint(
         status=xray.status
     )
 
-@router.post("/analyze/{image_id}", response_model=AnalysisResponse)
-def analyze_xray_endpoint(image_id: UUID, db: Session = Depends(get_db)):
-    
-    xray = (
+@router.get("/my", response_model=list[XRayResponse])
+def get_my_xrays(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    xrays = (
         db.query(XRayImage)
-        .filter(XRayImage.id == image_id)
-        .first()
-    )
-
-    if not xray:
-        raise HTTPException(
-            status_code=404,
-            detail="X-Ray not found"
+        .filter(
+            XRayImage.user_id == current_user.id
         )
-
-    analysis = analyze_xray(
-        db=db,
-        image_id=xray.id,
-        image_path=xray.filepath
-    )
-
-    return analysis
-
-@router.get("/analysis/{analysis_id}")
-def get_analysis_endpoint(analysis_id: UUID, db: Session = Depends(get_db)):
-    analysis = (
-        db.query(XRayAnalysis)
-        .filter(XRayAnalysis.id == analysis_id)
-        .first()
-    )
-
-    if not analysis:
-        raise HTTPException(
-            status_code=404,
-            detail="Analysis not found"
-        )
-
-    return analysis
-
-@router.get("/xray/{image_id}/analyses")
-def get_xray_analyses_endpoint(image_id: UUID, db: Session = Depends(get_db)):
-    analyses = (
-        db.query(XRayAnalysis)
-        .filter(XRayAnalysis.image_id == image_id)
+        .order_by(XRayImage.created_at.desc())
         .all()
     )
 
-    return analyses
+    return xrays

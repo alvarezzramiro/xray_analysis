@@ -15,27 +15,16 @@ class Detection(BaseModel):
     bbox: BoundingBox
 
 class AnalysisResponse(BaseModel):
-
     id: UUID
-
     image_id: UUID
-
     model_version: str
-
     fracture_detected: bool
-
     detections_count: int
-
     max_confidence: Optional[float]
-
     detections: List[Detection]
-
     annotated_image_path: Optional[str]
-
     processing_time_ms: int
-
     status: str
-
     error_message: Optional[str]
 
     class Config:

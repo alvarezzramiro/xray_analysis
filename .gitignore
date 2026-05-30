@@ -26,6 +26,6 @@ downloads/
 BONE FRACTURE.*/
 
 # Archivos subidos por usuarios en la API
-backend/app/uploads/*
-backend/app/annotated/*
+backend/uploads/*
+backend/annotated/*
 !backend/app/uploads/.gitkeep

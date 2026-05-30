@@ -24,13 +24,20 @@ def save_xray_file(file):
     return unique_filename, filepath
 
 
-def create_xray_record(db: Session, id: str, filename:str, filepath:str):
+def create_xray_record(
+    db: Session, 
+    id: str, 
+    filename:str, 
+    filepath:str,
+    user_id
+):
     
     db_xray = XRayImage(
         id=id,
         filename=filename,
         filepath=filepath,
-        status="uploaded"
+        status="uploaded",
+        user_id=user_id
     )
 
     db.add(db_xray)
