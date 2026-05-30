@@ -21,6 +21,26 @@ router = APIRouter(
     tags=["Analysis"]
 )
 
+@router.get("/my", response_model=list[AnalysisResponse])
+def get_my_analyses(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    analyses = (
+        db.query(XRayAnalysis)
+        .join(
+            XRayImage,
+            XRayAnalysis.image_id == XRayImage.id
+        )
+        .filter(
+            XRayImage.user_id == current_user.id
+        )
+        .order_by(XRayAnalysis.created_at.desc())
+        .all()
+    )
+
+    return analyses
+
 @router.post("/{image_id}", response_model=AnalysisResponse)
 def analyze_xray_endpoint(
     image_id: UUID, 
@@ -106,25 +126,6 @@ def get_xray_analyses_endpoint(
     analyses = (
         db.query(XRayAnalysis)
         .filter(XRayAnalysis.image_id == image_id)
-        .order_by(XRayAnalysis.created_at.desc())
-    )
-
-    return analyses
-
-@router.get("/my", response_model=list[AnalysisResponse])
-def get_my_analyses(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    analyses = (
-        db.query(XRayAnalysis)
-        .join(
-            XRayImage,
-            XRayAnalysis.image_id == XRayImage.id
-        )
-        .filter(
-            XRayImage.user_id == current_user.id
-        )
         .order_by(XRayAnalysis.created_at.desc())
         .all()
     )

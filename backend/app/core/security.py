@@ -23,7 +23,7 @@ ALGOTITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 oauth_scheme = OAuth2PasswordBearer(
-    tokenUrl="/login"
+    tokenUrl="/auth/login"
 )
 
 def create_access_token(data: dict):
