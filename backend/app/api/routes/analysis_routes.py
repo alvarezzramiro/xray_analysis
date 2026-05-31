@@ -14,7 +14,7 @@ from app.models.xray_analysis import XRayAnalysis
 
 from app.core.security import get_current_user
 
-from backend.app.models.users import User
+from app.models.users import User
 
 router = APIRouter(
     prefix="/analysis",

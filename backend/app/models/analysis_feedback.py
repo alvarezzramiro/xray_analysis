@@ -57,3 +57,9 @@ class AnalysisFeedback(Base):
         back_populates="feedback",
         cascade="all, delete-orphan"
     )
+
+    training_candidate = relationship(
+        "TrainingCandidate",
+        back_populates="feedback",
+        uselist=False
+    )

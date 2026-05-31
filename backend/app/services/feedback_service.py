@@ -1,8 +1,8 @@
 from collections import Counter
 
 from app.models.analysis_feedback import AnalysisFeedback
-
 from app.models.feedback_annotation import FeedbackAnnotation
+from app.models.training_candidates import TrainingCandidate
 
 VALID_FEEDBACK_TYPES = {
     "correct",
@@ -66,9 +66,16 @@ def create_feedback(
             )
         )
 
+    if feedback_type != "correct":
+        db.add(
+            TrainingCandidate(
+                feedback_id=feedback.id
+            )
+        )
+        
     db.commit()
     db.refresh(feedback)
-
+    
     return feedback
 
 def get_user_feedbacks(db, user_id):
@@ -112,3 +119,12 @@ def get_feedback_stats(db, user_id):
         "multiple_errors": counts.get("bad_localization", 0),
         "other": counts.get("other", 0)
     }
+
+def get_training_candidates(db):
+    return (
+        db.query(TrainingCandidate)
+        .filter(
+            TrainingCandidate.used_for_training == False
+        )
+        .all()
+    )

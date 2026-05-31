@@ -10,7 +10,7 @@ from app.models.xray_image import XRayImage
 
 from app.core.security import get_current_user
 
-from backend.app.models.users import User
+from app.models.users import User
 
 router = APIRouter(
     prefix="/xray",

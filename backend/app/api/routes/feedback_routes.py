@@ -7,7 +7,7 @@ from app.db.dependencies import get_db
 
 from app.core.security import get_current_user
 
-from backend.app.models.users import User
+from app.models.users import User
 from app.models.xray_analysis import XRayAnalysis
 from app.models.xray_image import XRayImage
 
