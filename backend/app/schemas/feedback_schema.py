@@ -46,5 +46,4 @@ class FeedbackStatsResponse(BaseModel):
     false_positive: int
     false_negative: int
     bad_localization: int
-    multiple_errors: int
     other: int

@@ -68,6 +68,9 @@ def export_pending_candidates(
             IMAGES_DIR,
             image.filename
         )
+        
+        if not os.path.exists(source_image):
+            continue
 
         shutil.copy2(
             source_image,

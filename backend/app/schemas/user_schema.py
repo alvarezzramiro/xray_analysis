@@ -4,12 +4,14 @@ from datetime import datetime
 from typing import Optional
 
 class UserCreate(BaseModel):
+    
     email: EmailStr
     username: str
     password: str
     full_name: Optional[str] = None
 
 class UserResponse(BaseModel):
+    
     id: UUID
     email: EmailStr
     username: str
@@ -22,5 +24,18 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 class UserLogin(BaseModel):
+    
     email: EmailStr
     password: str
+
+class UserRoleUpdate(BaseModel):
+    
+    role: str
+
+class AdminUserResponse(BaseModel):
+
+    id: UUID
+    email: str
+    username: str
+    role: str
+    is_active: bool

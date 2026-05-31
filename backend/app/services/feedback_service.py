@@ -9,7 +9,6 @@ VALID_FEEDBACK_TYPES = {
     "false_positive",
     "false_negative",
     "bad_localization",
-    "multiple_errors",
     "other"
 }
 
@@ -37,9 +36,15 @@ def create_feedback(
     
     if feedback_type not in VALID_FEEDBACK_TYPES:
 
-        raise ValueError(
-            f"Invalid feedback type: {feedback_type}"
-        )
+        raise ValueError(f"Invalid feedback type: {feedback_type}")
+    
+    if (feedback_type != "correct" and not annotations):
+
+        raise ValueError("Annotations are required for incorrect feedback")
+
+    if (feedback_type == "correct" and annotations):
+
+        raise ValueError("Correct feedback cannot contain annotations")
     
     feedback = AnalysisFeedback(
         user_id=user_id,
@@ -67,7 +72,7 @@ def create_feedback(
             )
         )
 
-    if feedback_type != "correct":
+    if feedback_type in ("false_positive", "false_negative", "bad_localization", "other"):
         db.add(
             TrainingCandidate(
                 feedback_id=feedback.id
@@ -117,6 +122,5 @@ def get_feedback_stats(db, user_id):
         "false_positive": counts.get("false_positive", 0),
         "false_negative": counts.get("false_negative", 0),
         "bad_localization": counts.get("bad_localization", 0),
-        "multiple_errors": counts.get("bad_localization", 0),
         "other": counts.get("other", 0)
     }

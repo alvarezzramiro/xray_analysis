@@ -25,7 +25,8 @@ datasets/
 downloads/
 BONE FRACTURE.*/
 
-# Archivos subidos por usuarios en la API
+# Archivos subidos, generados y exportados
 uploads/
 annotated/
+training_export/
 !backend/app/uploads/.gitkeep

@@ -16,3 +16,10 @@ class TrainingCandidateResponse(BaseModel):
 class ExportResponse(BaseModel):
 
     exported_candidates: int
+
+class TrainingStatsResponse(BaseModel):
+
+    pending_candidates: int
+    exported_candidates: int
+    used_for_training: int
+    total_candidates: int

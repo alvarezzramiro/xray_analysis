@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
 
-from app.schemas.training_schema import TrainingCandidateResponse
+from app.schemas.training_schema import TrainingCandidateResponse, TrainingStatsResponse
 
-from app.services.training_service import get_pending_training_candidates
+from app.services.training_service import get_pending_training_candidates, get_training_stats
 
 from app.services.training_export_service import export_pending_candidates
 
@@ -40,3 +40,9 @@ def export_training_dataset(
     return {
         "exported_candidates": exported_count
     }
+
+@router.get("/stats", response_model=TrainingStatsResponse)
+def get_training_stats_endpoint(
+    db: Session = Depends(get_db)
+):
+    return get_training_stats(db)
