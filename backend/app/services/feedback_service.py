@@ -2,11 +2,14 @@ from collections import Counter
 
 from app.models.analysis_feedback import AnalysisFeedback
 
+from app.models.feedback_annotation import FeedbackAnnotation
+
 VALID_FEEDBACK_TYPES = {
     "correct",
     "false_positive",
     "false_negative",
     "bad_localization",
+    "multiple_errors",
     "other"
 }
 
@@ -15,8 +18,22 @@ def create_feedback(
     user_id,
     analysis_id,
     feedback_type,
-    comment
+    comment,
+    annotations
 ):
+    
+    existing_feedback = (
+        db.query(AnalysisFeedback)
+        .filter(
+            AnalysisFeedback.user_id == user_id,
+            AnalysisFeedback.analysis_id == analysis_id
+        )
+        .first()
+    )
+
+    if existing_feedback:
+
+        raise ValueError("Feedback already exists for this analysis")   
     
     if feedback_type not in VALID_FEEDBACK_TYPES:
 
@@ -32,6 +49,23 @@ def create_feedback(
     )
 
     db.add(feedback)
+    db.flush()
+
+    for annotation in annotations:
+
+        db.add(
+            FeedbackAnnotation(
+                feedback_id=feedback.id,
+                class_name=annotation.class_name,
+
+                x1=annotation.x1,
+                y1=annotation.y1,
+
+                x2=annotation.x2,
+                y2=annotation.y2
+            )
+        )
+
     db.commit()
     db.refresh(feedback)
 
@@ -75,5 +109,6 @@ def get_feedback_stats(db, user_id):
         "false_positive": counts.get("false_positive", 0),
         "false_negative": counts.get("false_negative", 0),
         "bad_localization": counts.get("bad_localization", 0),
+        "multiple_errors": counts.get("bad_localization", 0),
         "other": counts.get("other", 0)
     }

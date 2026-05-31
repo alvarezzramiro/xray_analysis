@@ -7,7 +7,7 @@ from app.db.dependencies import get_db
 
 from app.core.security import get_current_user
 
-from app.models.user import User
+from backend.app.models.users import User
 from app.models.xray_analysis import XRayAnalysis
 from app.models.xray_image import XRayImage
 
@@ -66,7 +66,8 @@ def create_feedback_endpoint(
             user_id=current_user.id,
             analysis_id=feedback_data.analysis_id,
             feedback_type=feedback_data.feedback_type,
-            comment=feedback_data.comment
+            comment=feedback_data.comment,
+            annotations=feedback_data.annotations
         )
 
         return feedback
@@ -74,8 +75,8 @@ def create_feedback_endpoint(
     except ValueError as e:
     
         raise HTTPException(
-            status_code=404,
-            detail="Analysis not found"
+            status_code=409,
+            detail=str(e)
         )
     
 @router.get(

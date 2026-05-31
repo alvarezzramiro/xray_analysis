@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
 
-from app.models.user import User
+from backend.app.models.users import User
 
 from app.services.user_service import get_user_by_email
 
