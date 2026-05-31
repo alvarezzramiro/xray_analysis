@@ -22,6 +22,12 @@ class FeedbackAnnotation(Base):
         nullable=False
     )
 
+    class_id = Column(
+        Integer,
+        nullable=False,
+        default=0
+    )
+
     class_name = Column(
         String,
         nullable=False

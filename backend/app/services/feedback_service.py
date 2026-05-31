@@ -56,11 +56,12 @@ def create_feedback(
         db.add(
             FeedbackAnnotation(
                 feedback_id=feedback.id,
+
+                class_id=annotation.class_id,
                 class_name=annotation.class_name,
 
                 x1=annotation.x1,
                 y1=annotation.y1,
-
                 x2=annotation.x2,
                 y2=annotation.y2
             )
@@ -119,12 +120,3 @@ def get_feedback_stats(db, user_id):
         "multiple_errors": counts.get("bad_localization", 0),
         "other": counts.get("other", 0)
     }
-
-def get_training_candidates(db):
-    return (
-        db.query(TrainingCandidate)
-        .filter(
-            TrainingCandidate.used_for_training == False
-        )
-        .all()
-    )

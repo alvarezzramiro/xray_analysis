@@ -52,6 +52,11 @@ class AnalysisFeedback(Base):
         server_default=func.now()
     )
 
+    analysis = relationship(
+        "XRayAnalysis",
+        back_populates="feedbacks"
+    )
+
     annotations = relationship(
         "FeedbackAnnotation",
         back_populates="feedback",

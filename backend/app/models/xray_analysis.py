@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Boolean, Integer, DateTime, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app.db.session import Base
 
@@ -42,4 +43,14 @@ class XRayAnalysis(Base):
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now()
+    )
+
+    image = relationship(
+        "XRayImage",
+        back_populates="analyses"
+    )
+
+    feedbacks = relationship(
+        "AnalysisFeedback",
+        back_populates="analysis"
     )

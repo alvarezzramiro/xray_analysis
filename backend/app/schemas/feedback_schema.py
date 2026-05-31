@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 class AnnotationCreate(BaseModel):
+    class_id: int = 0
     class_name: str
     x1: int
     y1: int
@@ -12,6 +13,7 @@ class AnnotationCreate(BaseModel):
 
 class AnnotationResponse(BaseModel):
     id: UUID
+    class_id: int
     class_name: str
     x1: int
     y1: int
