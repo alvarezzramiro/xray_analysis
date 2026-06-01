@@ -33,7 +33,7 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     if existing_email:
         
         raise HTTPException(
-            status_code=404,
+            status_code=409,
             detail="Email already registered"
         )
     
@@ -42,7 +42,7 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     if existing_username:
         
         raise HTTPException(
-            status_code=404,
+            status_code=409,
             detail="Username already taken"
         )
     

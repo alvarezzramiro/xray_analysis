@@ -1,10 +1,12 @@
 services:
   api:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - .:/code
+      - ./backend:/code
       - C:\Users\ramaa\Downloads:/code/downloads
     depends_on:
       - db
@@ -19,3 +21,22 @@ services:
       POSTGRES_DB: xray_db
     ports:
       - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

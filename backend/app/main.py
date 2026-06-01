@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.init_db import init_db
 from app.api.routes.auth_routes import router as auth_router
@@ -12,6 +13,14 @@ from app.api.routes.dashboard_routes import router as dashboard_router
 from app.api.routes.model_version_routes import router as model_version_router
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup():
