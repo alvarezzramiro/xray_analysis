@@ -1,0 +1,2 @@
+class NoActiveModelError(Exception):
+    pass

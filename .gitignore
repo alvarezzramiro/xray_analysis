@@ -24,6 +24,7 @@ runs/
 datasets/
 downloads/
 BONE FRACTURE.*/
+models/
 
 # Archivos subidos, generados y exportados
 uploads/

@@ -22,6 +22,12 @@ class XRayAnalysis(Base):
         nullable=False
     )
 
+    model_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("model_versions.id"),
+        nullable=False
+    )
+
     model_version = Column(String, nullable=False)
 
     fracture_detected = Column(Boolean, nullable=False)
@@ -53,4 +59,9 @@ class XRayAnalysis(Base):
     feedbacks = relationship(
         "AnalysisFeedback",
         back_populates="analysis"
+    )
+
+    model = relationship(
+        "ModelVersion",
+        back_populates="analyses"
     )

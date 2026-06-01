@@ -13,6 +13,7 @@ from app.models.xray_image import XRayImage
 from app.models.xray_analysis import XRayAnalysis
 
 from app.core.security import get_current_user
+from app.core.exceptions import NoActiveModelError
 
 from app.models.users import User
 
@@ -66,13 +67,22 @@ def analyze_xray_endpoint(
             detail="Not authorized"
         )
 
-    analysis = analyze_xray(
-        db=db,
-        image_id=xray.id,
-        image_path=xray.filepath
-    )
+    try:
 
-    return analysis
+        analysis = analyze_xray(
+            db=db,
+            image_id=xray.id,
+            image_path=xray.filepath
+        )
+
+        return analysis
+    
+    except NoActiveModelError as e:
+
+        raise HTTPException(
+            status_code=503,
+            detail=str(e)
+        )
 
 @router.get("/{analysis_id}")
 def get_analysis_endpoint(

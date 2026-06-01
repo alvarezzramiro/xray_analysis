@@ -3,28 +3,35 @@ import time
 from app.models.xray_analysis import XRayAnalysis
 from app.services.detectors import fracture_detector
 from app.services.overlay_service import generate_overlay_image
-
-MODEL_VERSION = "fracture-v1"
+from app.services.model_version_service import get_active_model
+from app.core.exceptions import NoActiveModelError
 
 def analyze_xray(db, image_id, image_path):
 
     start_time = time.time()
+    
+    active_model = get_active_model(db)
+
+    if not active_model:
+        raise NoActiveModelError(
+            "No active model configured"
+        )
 
     try:
 
-        detection_result = (fracture_detector.detect(image_path))
+        detection_result = fracture_detector.detect(image_path)
 
-        detections = (detection_result["detections"])
+        detections = detection_result["detections"]
 
-        results = (detection_result["results"])
+        results = detection_result["results"]
 
-        fracture_detected = (len(detections) > 0)
+        fracture_detected = len(detections) > 0
 
         annotated_image_path = None
 
         if results:
 
-            annotated_image_path = (generate_overlay_image(results, image_path))
+            annotated_image_path = generate_overlay_image(results, image_path)
 
         processing_time_ms = int((time.time() - start_time) * 1000)
 
@@ -38,7 +45,10 @@ def analyze_xray(db, image_id, image_path):
 
         analysis = XRayAnalysis(
             image_id=image_id,
-            model_version=MODEL_VERSION,
+
+            model_id=active_model.id,
+            model_version=active_model.version,
+            
             fracture_detected=fracture_detected,
             detections=detections,
             detections_count=len(detections),
@@ -61,7 +71,10 @@ def analyze_xray(db, image_id, image_path):
 
         analysis = XRayAnalysis(
             image_id=image_id,
-            model_version=MODEL_VERSION,
+            
+            model_id=active_model.id,
+            model_version=active_model.version,
+
             fracture_detected=False,
             detections=[],
             detections_count=0,
