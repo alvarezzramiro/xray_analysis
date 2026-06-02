@@ -23,3 +23,27 @@ export const loginRequest = async (
 
     return response.data;
 };
+
+export const registerRequest = async (
+    email: string,
+    username: string,
+    password: string,
+    fullName?: string
+) => {
+    const response = await api.post(
+        "/auth/register",
+        {
+            email,
+            username,
+            password,
+            fullName: fullName
+        }
+    );
+
+    return response.data;
+}
+
+export const getCurrentUserRequest = async () => {
+    const response = await api.get("/user/me");
+    return response.data;
+};

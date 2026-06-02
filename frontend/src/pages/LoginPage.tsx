@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { login } from "../services/AuthService";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
+
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [email, setEmail] =
         useState("");
@@ -22,7 +27,7 @@ export default function LoginPage() {
                 password
             );
 
-            alert("Login successful");
+            navigate("/dashboard");
 
         } catch (error: any) {
             console.log(error);
@@ -59,6 +64,14 @@ export default function LoginPage() {
             <button type="submit">
                 Login
             </button>
+
+            <p>
+                Don't have an account?
+                {" "}
+                <Link to="/register">
+                    Register
+                </Link>
+            </p>
         </form>
     );
 }

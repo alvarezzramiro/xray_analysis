@@ -11,9 +11,7 @@ def create_user(
     password: str,
     full_name: str | None = None
 ):
-    print(password)
-    print(type(password))
-
+    
     hashed_password = hash_password(password)
 
     user = User(
