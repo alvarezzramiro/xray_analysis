@@ -1,33 +1,47 @@
-# Python compilado
+# Enviroment Variables
+.env*
+!.env.example
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.venv/
-venv/
-env/
 
-# Entornos virtuales y Anaconda
-.conda/
-.anaconda/
+#Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
 
-# Docker y Bases de datos locales
-.docker/
+#IDEs
+.vscode/
+.idea/
+
+#Logs
+*.log
+
+#Docker
 postgres_data/
 
-# Variables de entorno (Contraseñas y credenciales)
-.env
+#Generated User Content
+backend/uploads/
+backend/annotated/
+backend/downloads/
 
-# Datasets y archivos de entrenamiento
-*.pt
-runs/
-datasets/
-downloads/
-BONE FRACTURE.*/
-models/
+# Keep folder structure
+!backend/uploads/.gitkeep
+!backend/annotated/.gitkeep
+!backend/downloads/.gitkeep
 
-# Archivos subidos, generados y exportados
-uploads/
-annotated/
-training_export/
-!backend/app/uploads/.gitkeep
+# YOLO training artifacts
+backend/runs/
+backend/training_export/
+
+# Datasets
+backend/datasets/
+backend/models/
+backend/*.pt
+
+# OS Files
+.DS_Store
+Thumbs.db
