@@ -24,9 +24,9 @@ frontend/.vite/
 postgres_data/
 
 #Generated User Content
-backend/uploads/
-backend/annotated/
-backend/downloads/
+backend/uploads/*
+backend/annotated/*
+backend/downloads/*
 
 # Keep folder structure
 !backend/uploads/.gitkeep
@@ -36,10 +36,9 @@ backend/downloads/
 # YOLO training artifacts
 backend/runs/
 backend/training_export/
-
-# Datasets
-backend/datasets/
 backend/models/
+backend/datasets/
+
 backend/*.pt
 
 # OS Files
