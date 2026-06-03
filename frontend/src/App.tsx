@@ -5,11 +5,14 @@ import {
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+
 import DashboardPage from "./pages/DashboardPage";
-import AdminDashboard from "./pages/AdminDashboardPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
+
+import DashboardLayout from "./layouts/DashboardLayout";
 
 function App() {
 
@@ -28,27 +31,65 @@ function App() {
             />
 
             <Route
-                path="/dashboard"
                 element={
                     <ProtectedRoute>
-
-                        <DashboardPage />
-
+                        <DashboardLayout />
                     </ProtectedRoute>
                 }
-            />
+            >
+
+                <Route
+                    path="/dashboard"
+                    element={<DashboardPage />}
+                />
+
+                <Route
+                    path="/xrays"
+                    element={
+                        <div>
+                            My X-Rays
+                        </div>
+                    }
+                />
+
+                <Route
+                    path="/analyses"
+                    element={
+                        <div>
+                            Analyses
+                        </div>
+                    }
+                />
+
+                <Route
+                    path="/feedback"
+                    element={
+                        <div>
+                            Feedback
+                        </div>
+                    }
+                />
+
+            </Route>
 
             <Route
                 path="/admin"
                 element={
                     <AdminRoute>
-
-                        <AdminDashboard />
-
+                        <DashboardLayout />
                     </AdminRoute>
                 }
-            />
+            >
 
+                <Route
+                    index
+                    element={
+                        <AdminDashboardPage />
+                    }
+                />
+
+            </Route>
+                        
         </Routes>
 
     );

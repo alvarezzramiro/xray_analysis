@@ -1,24 +1,73 @@
-import { useAuth } from "../hooks/useAuth";
+import {
+    useEffect,
+    useState
+} from "react";
 
-import { useNavigate } from "react-router-dom";
+import type {
+    DashboardData
+} from "../types/Dashboard";
+
+import {
+    fetchDashboardData
+} from "../services/dashboardService";
+
+import StatsCards
+    from "../components/dashboard/StatsCards";
+
+import FeedbackSummary
+    from "../components/dashboard/FeedbackSummary";
+
+import QuickActions
+    from "../components/dashboard/QuickActions";
+import type { Analysis } from "../types/Analysis";
+import type { XRay } from "../types/Xray";
+import { fetchMyXrays } from "../services/xrayService";
+import { fetchMyAnalyses } from "../services/analysisService";
+import RecentUploads from "../components/dashboard/RecentUploads";
+import RecentAnalyses from "../components/dashboard/RecentAnalysis";
 
 export default function DashboardPage() {
 
-    const navigate = useNavigate();
+    const [
+        dashboard,
+        setDashboard
+    ] = useState<
+        DashboardData | null
+    >(null);
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
+    const [xrays, setXrays] =
+    useState<XRay[]>([]);
+
+    const [analyses, setAnalyses] =
+    useState<Analysis[]>([]);
+
+    useEffect(() => {
+
+        const loadDashboard =
+            async () => {
+
+                const dashboardData =
+                    await fetchDashboardData();
+
+                const xraysData =
+                    await fetchMyXrays();
+
+                const analysesData =
+                    await fetchMyAnalyses();
+
+                setDashboard(dashboardData);
+                setXrays(xraysData.slice(0, 5));
+                setAnalyses(analysesData.slice(0, 5));
+            };
+
+        loadDashboard();
+
+    }, []);
+
+    if (!dashboard) {
+
+        return <p>Loading...</p>;
     }
-
-    const {
-        user,
-        logout
-    } = useAuth();
-
-    const goToAdmin = () => {
-        navigate("/admin");
-    };
 
     return (
 
@@ -28,33 +77,24 @@ export default function DashboardPage() {
                 Dashboard
             </h1>
 
-            <p>
-                Welcome {user?.fullName || user?.username}
-            </p>
+            <StatsCards
+                dashboard={dashboard}
+            />
 
-            <p>
-                Role: {user?.role}
-            </p>
+            <QuickActions />
 
-            {
-                user?.role === "admin" && (
+            <FeedbackSummary
+                dashboard={dashboard}
+            />
 
-                    <button
-                        onClick={goToAdmin}
-                    >
-                        Admin Panel
-                    </button>
+            <RecentUploads
+                xrays={xrays}
+            />
 
-                )
-            }
-
-            <button
-                onClick={handleLogout}
-            >
-                Logout
-            </button>
+            <RecentAnalyses
+                analyses={analyses}
+            />
 
         </div>
-
     );
 }
