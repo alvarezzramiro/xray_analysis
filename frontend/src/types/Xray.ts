@@ -4,8 +4,6 @@ export interface XRay {
 
     filename: string;
 
-    filepath: string;
-
     status: string;
 
     created_at: string;

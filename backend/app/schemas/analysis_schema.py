@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel
 from uuid import UUID
 from typing import List, Optional
@@ -26,6 +28,7 @@ class AnalysisResponse(BaseModel):
     processing_time_ms: int
     status: str
     error_message: Optional[str]
+    created_at: datetime
 
     class Config:
         from_attributes = True

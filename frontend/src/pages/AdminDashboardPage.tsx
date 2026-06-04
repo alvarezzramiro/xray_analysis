@@ -34,13 +34,6 @@ export default function AdminDashboard() {
             >
                 Dashboard
             </button>
-
-            <button
-                onClick={handleLogout}
-            >
-                Logout
-            </button>
-
         </div>
 
     );
