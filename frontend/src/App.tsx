@@ -15,6 +15,7 @@ import AdminRoute from "./routes/AdminRoute";
 
 import DashboardLayout from "./layouts/DashboardLayout";
 import AnalysisDetailPage from "./pages/AnalysisDetailPage";
+import MyAnalysesPage from "./pages/MyAnalysesPage";
 
 function App() {
 
@@ -59,9 +60,11 @@ function App() {
                 <Route
                     path="/analyses"
                     element={
-                        <div>
-                            Analyses
-                        </div>
+                        <ProtectedRoute>
+
+                            <MyAnalysesPage />
+
+                        </ProtectedRoute>
                     }
                 />
 

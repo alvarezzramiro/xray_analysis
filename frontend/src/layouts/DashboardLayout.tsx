@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
 export default function DashboardLayout() {
@@ -10,7 +9,6 @@ export default function DashboardLayout() {
                 minHeight: "100vh",
             }}
         >
-            <Sidebar />
 
             <div
                 style={{

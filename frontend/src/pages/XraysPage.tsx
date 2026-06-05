@@ -3,6 +3,7 @@ import type { XRay } from "../types/Xray";
 import { fetchMyXrays, uploadXrayFile } from "../services/xrayService";
 import { runAnalysis } from "../services/analysisService";
 import { useNavigate } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
 
 export default function MyXraysPage() {
 
@@ -93,122 +94,126 @@ export default function MyXraysPage() {
         };
 
     return (
-
-        <div>
-
-            <h1>
-                My X-Rays
-            </h1>
-
+        
+        <MainLayout>
+        
             <div>
 
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                />
+                <h1>
+                    My X-Rays
+                </h1>
 
-                <button
-                    onClick={handleUpload}
-                    disabled={!file || loading}
-                >
-                    {loading ? "Uploading..." : "Upload X-Ray"}
-                </button>
+                <div>
 
-            </div>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                    />
 
-            <hr />
+                    <button
+                        onClick={handleUpload}
+                        disabled={!file || loading}
+                    >
+                        {loading ? "Uploading..." : "Upload X-Ray"}
+                    </button>
 
-            <h2>
-                Uploaded X-Rays
-            </h2>
+                </div>
 
-            {
+                <hr />
 
-                xrays.length === 0
+                <h2>
+                    Uploaded X-Rays
+                </h2>
 
-                    ? (
+                {
 
-                        <p>
-                            No X-Rays uploaded yet.
-                        </p>
-                    )
+                    xrays.length === 0
 
-                    : (
+                        ? (
 
-                        xrays.map(
-                            (xray) => (
-
-                                <div
-                                    key={xray.id}
-                                >
-
-                                    <img
-                                        src={xray.image_url}
-                                        alt={xray.filename}
-                                        width={250}
-                                    />
-                                    
-                                    <h3>
-                                        {xray.filename}
-                                    </h3>
-
-                                    <p>
-                                        Status:
-                                        {" "}
-                                        {xray.status}
-                                    </p>
-
-                                    <p>
-                                        Uploaded:
-                                        {" "}
-                                        {
-                                            new Date(
-                                                xray.created_at
-                                            ).toLocaleString()
-                                        }
-                                    </p>
-
-                                    <p>
-                                        Analyses: {xray.analysis_count}
-                                    </p>
-                                    
-                                    {
-                                        xray.analysis_count > 0
-
-                                        ? (
-                                            <button
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/analysis/${xray.latest_analysis_id}`
-                                                    )
-                                                }
-                                            >
-                                                View Analysis
-                                            </button>
-                                        )
-                                        : (
-
-                                            <button
-                                                onClick={() =>
-                                                    handleAnalyze(
-                                                        xray.id
-                                                    )
-                                                }
-                                            >
-                                                Analyze
-                                            </button>
-                                        )
-                                    }
-
-                                </div>
-                            )
+                            <p>
+                                No X-Rays uploaded yet.
+                            </p>
                         )
 
-                    )
+                        : (
 
-            }
+                            xrays.map(
+                                (xray) => (
 
-        </div>
+                                    <div
+                                        key={xray.id}
+                                    >
+
+                                        <img
+                                            src={xray.image_url}
+                                            alt={xray.filename}
+                                            width={250}
+                                        />
+                                        
+                                        <h3>
+                                            {xray.filename}
+                                        </h3>
+
+                                        <p>
+                                            Status:
+                                            {" "}
+                                            {xray.status}
+                                        </p>
+
+                                        <p>
+                                            Uploaded:
+                                            {" "}
+                                            {
+                                                new Date(
+                                                    xray.created_at
+                                                ).toLocaleString()
+                                            }
+                                        </p>
+
+                                        <p>
+                                            Analyses: {xray.analysis_count}
+                                        </p>
+                                        
+                                        {
+                                            xray.analysis_count > 0
+
+                                            ? (
+                                                <button
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/analysis/${xray.latest_analysis_id}`
+                                                        )
+                                                    }
+                                                >
+                                                    View Analysis
+                                                </button>
+                                            )
+                                            : (
+
+                                                <button
+                                                    onClick={() =>
+                                                        handleAnalyze(
+                                                            xray.id
+                                                        )
+                                                    }
+                                                >
+                                                    Analyze
+                                                </button>
+                                            )
+                                        }
+
+                                    </div>
+                                )
+                            )
+
+                        )
+
+                }
+
+            </div>
+            
+        </MainLayout>
     );
 }

@@ -31,7 +31,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/analyses">
-                    Analyses
+                    My Analyses
                 </Link>
 
                 <Link to="/feedback">

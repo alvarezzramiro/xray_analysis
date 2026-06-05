@@ -1,19 +1,12 @@
-import {
-    useEffect,
-    useState
-} from "react";
+import { useEffect, useState } from "react";
 
-import {
-    useParams
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import {
-    fetchAnalysis
-} from "../services/analysisService";
+import { fetchAnalysis } from "../services/analysisService";
 
-import type {
-    Analysis
-} from "../types/Analysis";
+import type { Analysis } from "../types/Analysis";
+
+import MainLayout from "../layouts/MainLayout";
 
 export default function AnalysisDetailPage() {
     const [analysis, setAnalysis] =
@@ -43,91 +36,104 @@ export default function AnalysisDetailPage() {
     }
 
     return (
+        <MainLayout>
+            <div
+                style={{
+                    display: "flex"
+                }}
+            >
 
-        <div>
+                <main
+                    style={{
+                        flex: 1,
+                        padding: "1rem"
+                    }}
+                >
 
-            <h1>
-                Analysis Detail
-            </h1>
+                    <h1>
+                        Analysis Detail
+                    </h1>
 
-            <p>
-                Model:
-                {analysis.model_version}
-            </p>
+                    <p>
+                        Model:
+                        {analysis.model_version}
+                    </p>
 
-            <p>
-                Fracture:
-                {
-                    analysis.fracture_detected
-                        ? " YES"
-                        : " NO"
-                }
-            </p>
+                    <p>
+                        Fracture detected:
+                        {
+                            analysis.fracture_detected
+                                ? " YES"
+                                : " NO"
+                        }
+                    </p>
 
-            <p>
-                Confidence:
-                {analysis.max_confidence}
-            </p>
+                    <p>
+                        Confidence:
+                        {analysis.max_confidence}
+                    </p>
 
-            <p>
-                Detections:
-                {analysis.detections_count}
-            </p>
+                    <p>
+                        Detections:
+                        {analysis.detections_count}
+                    </p>
 
-            <p>
-                Processing:
-                {analysis.processing_time_ms} ms
-            </p>
+                    <p>
+                        Processing:
+                        {analysis.processing_time_ms} ms
+                    </p>
 
-            {
-                analysis.original_image_url &&
-                (
-                    <img
-                        src={analysis.original_image_url                        }
-                        alt="Original"
-                        width={400}
-                    />
-                )
-            }
+                    {
+                        analysis.original_image_url &&
+                        (
+                            <img
+                                src={analysis.original_image_url}
+                                alt="Original"
+                                width={400}
+                            />
+                        )
+                    }
 
-            {
-                analysis.annotated_image_url &&
-                (
-                    <img
-                        src={analysis.annotated_image_url}
-                        alt="Annotated"
-                        width={400}
-                    />
-                )
-            }
+                    {
+                        analysis.annotated_image_url &&
+                        (
+                            <img
+                                src={analysis.annotated_image_url}
+                                alt="Annotated"
+                                width={400}
+                            />
+                        )
+                    }
 
-            <h2>Detections</h2>
+                    <h2>Detections</h2>
 
-            {
-                analysis.detections.map(
-                    (
-                        detection,
-                        index
-                    ) => (
+                    {
+                        analysis.detections.map(
+                            (
+                                detection,
+                                index
+                            ) => (
 
-                        <div key={index}>
+                                <div key={index}>
 
-                            <p>
-                                Class:
-                                {detection.class_name}
-                            </p>
+                                    <p>
+                                        Class:
+                                        {detection.class_name}
+                                    </p>
 
-                            <p>
-                                Confidence:
-                                {detection.confidence}
-                            </p>
+                                    <p>
+                                        Confidence:
+                                        {detection.confidence}
+                                    </p>
 
-                        </div>
-                    )
-                )
-            }
+                                </div>
+                            )
+                        )
+                    }
 
-        </div>
+                </main>
+            </div>
+        </MainLayout>
     );
 
 }

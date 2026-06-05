@@ -17,14 +17,14 @@ import StatsCards
 import FeedbackSummary
     from "../components/dashboard/FeedbackSummary";
 
-import QuickActions
-    from "../components/dashboard/QuickActions";
+// import QuickActions from "../components/dashboard/QuickActions";
 import type { Analysis } from "../types/Analysis";
 import type { XRay } from "../types/Xray";
 import { fetchMyXrays } from "../services/xrayService";
 import { fetchMyAnalyses } from "../services/analysisService";
 import RecentUploads from "../components/dashboard/RecentUploads";
 import RecentAnalyses from "../components/dashboard/RecentAnalysis";
+import MainLayout from "../layouts/MainLayout";
 
 export default function DashboardPage() {
 
@@ -70,31 +70,30 @@ export default function DashboardPage() {
     }
 
     return (
+        <MainLayout>
+            <div>
 
-        <div>
+                <h1>
+                    Dashboard
+                </h1>
 
-            <h1>
-                Dashboard
-            </h1>
+                <StatsCards
+                    dashboard={dashboard}
+                />
 
-            <StatsCards
-                dashboard={dashboard}
-            />
+                <FeedbackSummary
+                    dashboard={dashboard}
+                />
 
-            <QuickActions />
+                <RecentUploads
+                    xrays={xrays}
+                />
 
-            <FeedbackSummary
-                dashboard={dashboard}
-            />
+                <RecentAnalyses
+                    analyses={analyses}
+                />
 
-            <RecentUploads
-                xrays={xrays}
-            />
-
-            <RecentAnalyses
-                analyses={analyses}
-            />
-
-        </div>
+            </div>
+        </MainLayout>
     );
 }
