@@ -1,5 +1,18 @@
 import api from "./axios";
 
+export const analyzeXray =
+    async (
+        imageId: string
+    ) => {
+
+        const response =
+            await api.post(
+                `/analysis/${imageId}`
+            );
+
+        return response.data;
+    };
+
 export const getMyAnalyses =
     async () => {
 

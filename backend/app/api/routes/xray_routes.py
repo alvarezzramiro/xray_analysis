@@ -11,6 +11,7 @@ from app.models.xray_image import XRayImage
 from app.core.security import get_current_user
 
 from app.models.users import User
+from app.models.xray_analysis import XRayAnalysis
 
 router = APIRouter(
     prefix="/xray",
@@ -67,4 +68,37 @@ def get_my_xrays(
         .all()
     )
 
-    return xrays
+    response = []
+
+    for xray in xrays:
+
+        analysis_count = (
+            db.query(XRayAnalysis)
+            .filter(
+                XRayAnalysis.image_id == xray.id
+            )
+            .count()
+        )
+
+        latest_analysis = (
+            db.query(XRayAnalysis)
+            .filter(
+                XRayAnalysis.image_id == xray.id
+            )
+            .order_by(
+                XRayAnalysis.created_at.desc()
+            )
+            .first()
+        )
+
+        response.append({
+            "id": xray.id,
+            "filename": xray.filename,
+            "status": xray.status,
+            "created_at": xray.created_at,
+            "image_url": f"http://localhost:8000/uploads/{xray.filename}",
+            "analysis_count": analysis_count,
+            "latest_analysis": latest_analysis.id if latest_analysis else None
+        })
+
+    return response

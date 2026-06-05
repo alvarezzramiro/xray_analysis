@@ -6,12 +6,7 @@ export default function AdminDashboard() {
 
     const navigate = useNavigate();
 
-    const { user, logout } = useAuth();
-
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
-    };
+    const { user } = useAuth();
 
     const goToDashboard = () => {
         navigate("/dashboard");

@@ -11,5 +11,12 @@ class XRayResponse(BaseModel):
     filename: str
     status: str
     created_at: datetime
+
+    image_url: str
+
+    analysis_count: int
+
+    latest_analysis: UUID | None
+
     class Config:
         from_attributes = True

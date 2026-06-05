@@ -7,8 +7,6 @@ from app.services.model_version_service import get_active_model
 from app.core.exceptions import NoActiveModelError
 
 def analyze_xray(db, image_id, image_path):
-
-    start_time = time.time()
     
     active_model = get_active_model(db)
 
@@ -16,6 +14,20 @@ def analyze_xray(db, image_id, image_path):
         raise NoActiveModelError(
             "No active model configured"
         )
+
+    existing_analysis = (
+        db.query(XRayAnalysis)
+        .filter(
+            XRayAnalysis.image_id == image_id,
+            XRayAnalysis.model_version == active_model.version
+        )
+        .first()
+    )
+
+    if existing_analysis:
+        return existing_analysis
+
+    start_time = time.time()
 
     try:
 

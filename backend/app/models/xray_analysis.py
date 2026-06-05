@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, Integer, DateTime, Float, ForeignKey
+from sqlalchemy import Column, String, Boolean, Integer, DateTime, Float, ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -64,4 +64,9 @@ class XRayAnalysis(Base):
     model = relationship(
         "ModelVersion",
         back_populates="analyses"
+    )
+
+    
+    __table_args__ = (
+        UniqueConstraint("image_id", "model_version", name="uq_image_model_version"),
     )

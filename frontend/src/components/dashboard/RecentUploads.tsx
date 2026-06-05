@@ -22,13 +22,11 @@ export default function RecentUploads(
 
                 xrays.map(xray => (
 
-                    <div
-                        key={xray.id}
-                    >
-
-                        {xray.filename}
-
-                    </div>
+                    <img
+                        src={xray.image_url}
+                        alt={xray.filename}
+                        width={200}
+                    />
                 ))
             }
 

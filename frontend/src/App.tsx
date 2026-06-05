@@ -8,6 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 
 import DashboardPage from "./pages/DashboardPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import XraysPage from "./pages/XraysPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
@@ -46,9 +47,11 @@ function App() {
                 <Route
                     path="/xrays"
                     element={
-                        <div>
-                            My X-Rays
-                        </div>
+                        <ProtectedRoute>
+
+                            <XraysPage />
+
+                        </ProtectedRoute>
                     }
                 />
 
