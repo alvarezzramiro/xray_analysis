@@ -24,7 +24,8 @@ class AnalysisResponse(BaseModel):
     detections_count: int
     max_confidence: Optional[float]
     detections: List[Detection]
-    annotated_image_path: Optional[str]
+    original_image_url: Optional[str]
+    annotated_image_url: Optional[str]
     processing_time_ms: int
     status: str
     error_message: Optional[str]

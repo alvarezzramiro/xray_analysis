@@ -16,7 +16,7 @@ class XRayResponse(BaseModel):
 
     analysis_count: int
 
-    latest_analysis: UUID | None
+    latest_analysis_id: UUID | None
 
     class Config:
         from_attributes = True

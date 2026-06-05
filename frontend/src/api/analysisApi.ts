@@ -23,3 +23,16 @@ export const getMyAnalyses =
 
         return response.data;
     };
+
+export const getAnalysis =
+    async (
+        analysisId: string
+    ) => {
+
+        const response =
+            await api.get(
+                `/analysis/${analysisId}`
+            );
+
+        return response.data;
+    };

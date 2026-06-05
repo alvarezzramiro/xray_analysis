@@ -17,6 +17,8 @@ from app.core.exceptions import NoActiveModelError
 
 from app.models.users import User
 
+from pathlib import Path
+
 router = APIRouter(
     prefix="/analysis",
     tags=["Analysis"]
@@ -40,7 +42,42 @@ def get_my_analyses(
         .all()
     )
 
-    return analyses
+    response = []
+
+    for analysis in analyses:
+
+        xray = (
+            db.query(XRayImage)
+            .filter(
+                XRayImage.id == analysis.image_id
+            )
+            .first()
+        )
+
+        response.append({
+
+            "id": analysis.id,
+            "image_id": analysis.image_id,
+            "original_image_url":
+                f"http://localhost:8000/uploads/{xray.filename}",
+            "model_version": analysis.model_version,
+            "fracture_detected": analysis.fracture_detected,
+            "detections_count": analysis.detections_count,
+            "max_confidence": analysis.max_confidence,
+            "detections": analysis.detections,
+            "annotated_image_url":
+                (
+                    f"http://localhost:8000/annotated/{analysis.annotated_image_path}"
+                    if analysis.annotated_image_path
+                    else None
+                ),
+            "processing_time_ms": analysis.processing_time_ms,
+            "status": analysis.status,
+            "error_message": analysis.error_message,
+            "created_at": analysis.created_at
+        })
+
+    return response
 
 @router.post("/{image_id}", response_model=AnalysisResponse)
 def analyze_xray_endpoint(
@@ -108,8 +145,44 @@ def get_analysis_endpoint(
             status_code=404,
             detail="Analysis not found"
         )
+    
+    annotated_image_url = None
 
-    return analysis
+    if analysis.annotated_image_path:
+
+        annotated_image_url = (
+            f"http://localhost:8000/annotated/"
+            f"{analysis.annotated_image_path}"
+        )
+
+    xray = (
+        db.query(XRayImage)
+        .filter(
+            XRayImage.id == analysis.image_id
+        )
+        .first()
+    )
+
+    original_image_url = (
+        f"http://localhost:8000/uploads/"
+        f"{xray.filename}"
+    )
+
+
+    return {
+        "id": analysis.id,
+        "image_id": analysis.image_id,
+        "original_image_url": original_image_url,
+        "annotated_image_url": annotated_image_url,
+        "model_version": analysis.model_version,
+        "fracture_detected": analysis.fracture_detected,
+        "detections_count": analysis.detections_count,
+        "max_confidence": analysis.max_confidence,
+        "detections": analysis.detections,
+        "processing_time_ms": analysis.processing_time_ms,
+        "status": analysis.status,
+        "error_message": analysis.error_message
+    }
 
 @router.get("/xray/{image_id}", response_model=list[AnalysisResponse])
 def get_xray_analyses_endpoint(

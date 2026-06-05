@@ -98,7 +98,7 @@ def get_my_xrays(
             "created_at": xray.created_at,
             "image_url": f"http://localhost:8000/uploads/{xray.filename}",
             "analysis_count": analysis_count,
-            "latest_analysis": latest_analysis.id if latest_analysis else None
+            "latest_analysis_id": latest_analysis.id if latest_analysis else None
         })
 
     return response

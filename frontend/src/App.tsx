@@ -14,6 +14,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 
 import DashboardLayout from "./layouts/DashboardLayout";
+import AnalysisDetailPage from "./pages/AnalysisDetailPage";
 
 function App() {
 
@@ -92,6 +93,17 @@ function App() {
                 />
 
             </Route>
+
+            <Route
+                path="/analysis/:analysisId"
+                element={
+                    <ProtectedRoute>
+
+                        <AnalysisDetailPage />
+
+                    </ProtectedRoute>
+                }
+            />
                         
         </Routes>
 
