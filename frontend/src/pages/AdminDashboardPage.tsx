@@ -1,35 +1,23 @@
-import { useNavigate } from "react-router-dom";
-
 import { useAuth } from "../hooks/useAuth";
+import MainLayout from "../layouts/MainLayout";
 
 export default function AdminDashboard() {
 
-    const navigate = useNavigate();
-
     const { user } = useAuth();
 
-    const goToDashboard = () => {
-        navigate("/dashboard");
-    };
-
     return (
+        <MainLayout>
 
-        <div>
+            <div>
 
-            <h1>
-                Admin Dashboard
-            </h1>
+                <h1>
+                    Admin Dashboard
+                </h1>
 
-            <p>
-                Welcome {user?.fullName || user?.username}
-            </p>
-
-            <button
-                onClick={goToDashboard}
-            >
-                Dashboard
-            </button>
-        </div>
-
+                <p>
+                    Welcome Admin: {user?.fullName || user?.username}
+                </p>
+            </div>
+        </MainLayout>
     );
 }

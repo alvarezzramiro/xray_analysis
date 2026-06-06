@@ -8,6 +8,8 @@ import type { Analysis } from "../types/Analysis";
 
 import MainLayout from "../layouts/MainLayout";
 
+import AnalysisFeedbackPanel from "../components/analysis/AnalysisFeedbackPanel";
+
 export default function AnalysisDetailPage() {
     const [analysis, setAnalysis] =
         useState<Analysis | null>(null);
@@ -130,6 +132,10 @@ export default function AnalysisDetailPage() {
                             )
                         )
                     }
+
+                    <AnalysisFeedbackPanel
+                        analysisId={analysis.id}
+                    />
 
                 </main>
             </div>

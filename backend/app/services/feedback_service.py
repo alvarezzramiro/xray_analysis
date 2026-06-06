@@ -3,6 +3,7 @@ from collections import Counter
 from app.models.analysis_feedback import AnalysisFeedback
 from app.models.feedback_annotation import FeedbackAnnotation
 from app.models.training_candidates import TrainingCandidate
+from app.models.xray_analysis import XRayAnalysis
 
 VALID_FEEDBACK_TYPES = {
     "correct",
@@ -18,7 +19,7 @@ def create_feedback(
     analysis_id,
     feedback_type,
     comment,
-    annotations
+    annotations,
 ):
     
     existing_feedback = (
@@ -86,12 +87,56 @@ def create_feedback(
 
 def get_user_feedbacks(db, user_id):
 
-    return (
+    feedbacks = (
         db.query(AnalysisFeedback)
-        .filter(AnalysisFeedback.user_id == user_id)
-        .order_by(AnalysisFeedback.created_at.desc())
+        .filter(
+            AnalysisFeedback.user_id == user_id
+        )
+        .order_by(
+            AnalysisFeedback.created_at.desc()
+        )
         .all()
     )
+
+    response = []
+
+    for feedback in feedbacks:
+
+        analysis = (
+            db.query(XRayAnalysis)
+            .filter(
+                XRayAnalysis.id ==
+                feedback.analysis_id
+            )
+            .first()
+        )
+
+        analysis_image_url = None
+
+        if (
+            analysis
+            and
+            analysis.annotated_image_path
+        ):
+
+            analysis_image_url = (
+                f"http://localhost:8000/annotated/"
+                f"{analysis.annotated_image_path}"
+            )
+
+        response.append({
+
+            "id": feedback.id,
+            "user_id": feedback.user_id,
+            "analysis_id": feedback.analysis_id,
+            "feedback_type": feedback.feedback_type,
+            "comment": feedback.comment,
+            "created_at": feedback.created_at,
+            "annotations": feedback.annotations,
+            "analysis_image_url": analysis_image_url
+        })
+
+    return response
 
 def get_feedback_by_id(db, feedback_id, user_id):
 
@@ -124,3 +169,20 @@ def get_feedback_stats(db, user_id):
         "bad_localization": counts.get("bad_localization", 0),
         "other": counts.get("other", 0)
     }
+
+def get_feedback_by_analysis(
+    db,
+    analysis_id,
+    user_id
+):
+    return (
+        db.query(AnalysisFeedback)
+        .filter(
+            AnalysisFeedback.analysis_id
+            == analysis_id,
+
+            AnalysisFeedback.user_id
+            == user_id
+        )
+        .first()
+    )

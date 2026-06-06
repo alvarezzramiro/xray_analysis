@@ -19,6 +19,7 @@ from app.schemas.feedback_schema import (
 
 from app.services.feedback_service import (
     create_feedback,
+    get_feedback_by_analysis,
     get_user_feedbacks,
     get_feedback_by_id,
     get_feedback_stats
@@ -131,5 +132,22 @@ def get_feedback_endpoint(
             status_code=404,
             detail="Feedback not found"
         )
+
+    return feedback
+
+@router.get(
+    "/analysis/{analysis_id}"
+)
+def get_feedback_for_analysis(
+    analysis_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    feedback = get_feedback_by_analysis(
+        db,
+        analysis_id,
+        current_user.id
+    )
 
     return feedback

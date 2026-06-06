@@ -16,6 +16,7 @@ import AdminRoute from "./routes/AdminRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import AnalysisDetailPage from "./pages/AnalysisDetailPage";
 import MyAnalysesPage from "./pages/MyAnalysesPage";
+import FeedbacksPage from "./pages/FeedbacksPage";
 
 function App() {
 
@@ -71,9 +72,9 @@ function App() {
                 <Route
                     path="/feedback"
                     element={
-                        <div>
-                            Feedback
-                        </div>
+                        <ProtectedRoute>
+                            <FeedbacksPage />
+                        </ProtectedRoute>
                     }
                 />
 

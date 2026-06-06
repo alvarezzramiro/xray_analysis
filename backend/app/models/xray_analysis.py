@@ -38,7 +38,7 @@ class XRayAnalysis(Base):
 
     max_confidence = Column(Float, nullable=True)
 
-    annotated_image_path = Column(String, nullable=False)
+    annotated_image_path = Column(String, nullable=True)
 
     processing_time_ms = Column(Integer, nullable=False)
 

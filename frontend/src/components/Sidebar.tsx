@@ -35,7 +35,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/feedback">
-                    Feedback
+                    My Feedbacks
                 </Link>
 
                 {

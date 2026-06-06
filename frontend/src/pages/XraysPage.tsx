@@ -77,15 +77,16 @@ export default function MyXraysPage() {
 
             try {
 
-                await runAnalysis(
-                    imageId
-                );
+                const analysis =
+                    await runAnalysis(imageId);
 
-                alert(
-                    "Analysis completed"
-                );
+                alert("Analysis completed");
 
                 await loadXrays();
+
+                navigate(
+                    `/analysis/${analysis.id}`
+                );
 
             } catch (error) {
 
@@ -189,7 +190,23 @@ export default function MyXraysPage() {
                                                 >
                                                     View Analysis
                                                 </button>
+                                                
+                                                /*
+                                                tiene feedback?
+                                                
+                                                ? (
+                                                    <button>
+                                                        View Feedback
+                                                    </button>
+                                                )
+                                                : (
+                                                    <button>
+                                                        Provide Feedback
+                                                    </button>
+                                                )
+                                                */
                                             )
+
                                             : (
 
                                                 <button

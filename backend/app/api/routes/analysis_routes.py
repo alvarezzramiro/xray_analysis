@@ -4,7 +4,7 @@ from uuid import UUID
 
 from app.db.dependencies import get_db
 
-from app.services.analysis_service import analyze_xray
+from app.services.analysis_service import ( analyze_xray, build_analysis_response )
 
 from app.schemas.analysis_schema import AnalysisResponse
 
@@ -46,36 +46,12 @@ def get_my_analyses(
 
     for analysis in analyses:
 
-        xray = (
-            db.query(XRayImage)
-            .filter(
-                XRayImage.id == analysis.image_id
+        response.append(
+            build_analysis_response(
+                analysis,
+                analysis.image
             )
-            .first()
         )
-
-        response.append({
-
-            "id": analysis.id,
-            "image_id": analysis.image_id,
-            "original_image_url":
-                f"http://localhost:8000/uploads/{xray.filename}",
-            "model_version": analysis.model_version,
-            "fracture_detected": analysis.fracture_detected,
-            "detections_count": analysis.detections_count,
-            "max_confidence": analysis.max_confidence,
-            "detections": analysis.detections,
-            "annotated_image_url":
-                (
-                    f"http://localhost:8000/annotated/{analysis.annotated_image_path}"
-                    if analysis.annotated_image_path
-                    else None
-                ),
-            "processing_time_ms": analysis.processing_time_ms,
-            "status": analysis.status,
-            "error_message": analysis.error_message,
-            "created_at": analysis.created_at
-        })
 
     return response
 
@@ -112,7 +88,7 @@ def analyze_xray_endpoint(
             image_path=xray.filepath
         )
 
-        return analysis
+        return build_analysis_response(analysis, xray)
     
     except NoActiveModelError as e:
 
@@ -169,20 +145,10 @@ def get_analysis_endpoint(
     )
 
 
-    return {
-        "id": analysis.id,
-        "image_id": analysis.image_id,
-        "original_image_url": original_image_url,
-        "annotated_image_url": annotated_image_url,
-        "model_version": analysis.model_version,
-        "fracture_detected": analysis.fracture_detected,
-        "detections_count": analysis.detections_count,
-        "max_confidence": analysis.max_confidence,
-        "detections": analysis.detections,
-        "processing_time_ms": analysis.processing_time_ms,
-        "status": analysis.status,
-        "error_message": analysis.error_message
-    }
+    return build_analysis_response(
+        analysis,
+        analysis.image
+    )
 
 @router.get("/xray/{image_id}", response_model=list[AnalysisResponse])
 def get_xray_analyses_endpoint(
